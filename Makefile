@@ -6,8 +6,8 @@ OBJDUMP := objdump
 OBJCOPY := objcopy
 CONFIGS := -DCONFIG_HEAP_SIZE=4096
 
-CFLAGS := -O0 -ffreestanding -fno-pie -fno-stack-protector -g3 -Wall $(CONFIGS)
-
+-CFLAGS := -O0 -ffreestanding -fno-pie -fno-stack-protector -g3 -Wall $(CONFIGS)
++CFLAGS := -O0 -ffreestanding -fno-pie -fno-stack-protector -g3 -mcpu=cortex-a53+nofp -Wall $(CONFIGS)
 
 ODIR = obj
 SDIR = src
@@ -15,8 +15,8 @@ SDIR = src
 OBJS = \
 	boot.o \
 	kernel_main.o \
-	list.o			\
-
+	list.o		\
+	led.o   	\
 
 
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
