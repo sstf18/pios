@@ -29,11 +29,14 @@ int fatInit(){
 	if(strcmp(buffer, "FAT16")){
 		esp_printf(putc, "It is FAT16 \n \n");
 	}
-	esp_printf(putc,"Bytes per sector = %d \n" ,bs->bytes_per_sector);
-	esp_printf(putc,"Sectors per cluster = %d \n" ,bs->num_sectors_per_cluster);
-	esp_printf(putc,"Num Fat Tables = %d \n" ,bs->num_fat_tables); 
-	int root_sector_value = (bs->num_fat_tables * bs->num_sectors_per_fat) + bs->num_hidden_sectors + bs->num_reserved_sectors;
-	esp_printf(putc, "Root sector value = %d \n", root_sector_value);
+	
+	esp_printf(putc,"Bytes per sector--> %d \n" ,bs->bytes_per_sector);
+	esp_printf(putc,"Sectors per cluster--> %d \n" ,bs->num_sectors_per_cluster);
+	esp_printf(putc,"Reserved sectors--> %d \n" ,bs->num_reserved_sectors);
+	esp_printf(putc,"Fat Table--> %d \n" ,bs->num_fat_tables);
+	esp_printf(putc,"Root Directory entries--> %d \n" ,bs->num_root_dir_entries);
+	int root_sector_value = ((bs->num_fat_tables * bs->num_sectors_per_fat) + bs->num_hidden_sectors + bs->num_reserved_sectors);
+	esp_printf(putc,"Root Sector value --> %d \n", root_sector_value);
 }
 
 struct file *file_open;
@@ -73,8 +76,19 @@ void fatOpen(struct file* file, char* filename){
 
 //void fatRead
 //method developed with help provided after class
-void fatRead(struct file* file, char buffer, int bytesToRead){
+void fatRead(struct file* readfile,char buffer,int bytes_read){
 	int root_sector_value = ((bs->num_fat_tables * bs->num_sectors_per_fat) + bs->num_hidden_sectors + bs->num_reserved_sectors);
-	esp_printf(putc, "\nRDE Cluster =  %d \n", file->rde.cluster);
+
+	esp_printf(putc, "\nRDE Cluster --> %d \n", readfile->rde.cluster);
+
+
+	int first_root_dir = bs->num_reserved_sectors + (bs->num_fat_tables * bs->num_sectors_per_fat) + ((bs->num_root_dir_entries * 32) + (bs->bytes_per_sector - 1)) / bs->bytes_per_sector;
+	int first_sector = first_root_dir + ((readfile->rde.cluster - 2) * bs->num_sectors_per_cluster);
+	char rbbuffer[512];
+	sd_readblock(first_sector,rbbuffer,1);
+
+	esp_printf(putc, "Readblock --> %s \n", rbbuffer);
+	esp_printf(putc, "First root dir --> %d \n", first_root_dir);
+	esp_printf(putc, "First sector --> %d \n", first_sector);
 
 }
