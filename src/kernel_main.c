@@ -4,7 +4,13 @@
 #include "rprintf.h"
 #include "serial.h"
 #include "page.h"
-#include "mmu.h"
+//#include "mmu.h"
+#include "gpio.h"
+#include "fat.h"
+#include "sd.h"
+#include "fat.h"
+
+int global;
 #define NULL (void*)0 //added for serial port hw
 extern int __bss_start;
 extern int __bss_end;
@@ -13,11 +19,19 @@ void clear_bss();
 
 void kernel_main() {
 	
+	struct file fat_test;
 	
+	sd_init();
+	fatInit();
+	fatOpen(&fat_test, "TEST");
+	fatRead(&fat_test, "TESTFILE", 32);
+	while(1){
+		
+	}
 	//mmu_on();
 	//clear_bss();
 	
-	
+	/*
 	init_pfa_list();
 	struct ppage* test = free_list ;
 	esp_printf(putc, "physical addr 0: %x \n", test->physical_addr);
@@ -35,7 +49,7 @@ void kernel_main() {
 	esp_printf(putc,"after free page: %x \n", test);
 	esp_printf(putc,"after free addr: %x \n", test->physical_addr);
 	esp_printf(putc,"after free addr: %x \n", test->next->physical_addr);
-	
+	*/
 	
 			
 	//esp_printf(putc, "The memory location is %x", kernel_main);

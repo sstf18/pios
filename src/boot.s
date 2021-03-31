@@ -2,6 +2,7 @@
  
 .section ".kernel-header"
 
+
 // Kernel Header
 // See https://www.kernel.org/doc/Documentation/arm64/booting.txt
 b _start           /* CODE0 : Executable code */
@@ -57,4 +58,3 @@ maincore:
 4:  bl      kernel_main
     // for failsafe, halt this core too
 //    b 1b
-
